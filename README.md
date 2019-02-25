@@ -1,4 +1,4 @@
-# Exit Intent
+# Exit Intent (Mobile)
 
 [![version][version]](http://npm.im/exit-intent)
 [![MIT License][MIT License]](http://opensource.org/licenses/MIT)
@@ -7,18 +7,18 @@
 [![Size][Size]](https://unpkg.com/exit-intent)
 [![Size gzip][Size gzip]](https://unpkg.com/exit-intent)
 
-Exit Intent detection library.
+Exit intent detection library. Including support for mobile.
 
 ## Usage
 
 ```js
-import exitIntent from 'exit-intent'
+import exitIntent from 'exit-intent-mobile'
 
 // Initialise
 const removeExitIntent = exitIntent({
   maxDisplays: 2,
   eventThrottle: 100,
-  showAfterInactiveSeconds: 60,  // show after inactive seconds (cursor or scroll-events reset timer)
+  showAfterInactiveSeconds: 60,
   onExitIntent: () => {
     console.log('exit-intent triggered')
   }    
@@ -30,7 +30,7 @@ removeExitIntent()
 
 ### Options
 
-`maxDisplays` (default 1)  
+`maxDisplays` (default 99999)  
 maximum number of times to trigger.
 
 `eventThrottle` (default 200)  
@@ -53,4 +53,4 @@ MIT
 [Size]: https://badges.herokuapp.com/size/npm/exit-intent
 [Size gzip]: https://badges.herokuapp.com/size/npm/exit-intent?gzip=true
 
-originally based on https://github.com/richriscunha/Exitent
+originally based on https://github.com/danhayden/exit-intent (and https://github.com/richriscunha/Exitent)
