@@ -16,9 +16,9 @@ import exitIntent from 'exit-intent'
 
 // Initialise
 const removeExitIntent = exitIntent({
-  threshold: 50,
   maxDisplays: 2,
   eventThrottle: 100,
+  showAfterInactiveSeconds: 60,  // show after inactive seconds (cursor or scroll-events reset timer)
   onExitIntent: () => {
     console.log('exit-intent triggered')
   }    
@@ -30,9 +30,6 @@ removeExitIntent()
 
 ### Options
 
-`threshold` (default 20)  
-maximum distance in pixels from the top of the page to trigger.
-
 `maxDisplays` (default 1)  
 maximum number of times to trigger.
 
@@ -41,6 +38,9 @@ event throttle in milliseconds.
 
 `onExitIntent` (default no-op function)  
 function to call when an exit intent has been detected.
+
+`showAfterInactiveSeconds` (default 60 seconds)
+If user does NOT move mouse or scroll for nr of seconds, `onExitIntent`-function will be called. Useful for mobile, where mouseleave does NOT exist.
 
 ### License
 
