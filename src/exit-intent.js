@@ -1,5 +1,6 @@
 import throttle from 'lodash/throttle'
-
+import isTouchDevice from 'is-touch-device'
+const isDesktop = !isTouchDevice()
 /**
  * References
  *  => original https://www.npmjs.com/package/exit-intent
@@ -13,7 +14,6 @@ export default function ExitIntent (options = {}) {
     onExitIntent: () => {}
   }
   const config = {...defaultOptions, ...options}
-  const target = document.body
   let displays = 0
   // DISPLAY (only maxDisplays-times)
   const display = () => {
@@ -25,15 +25,19 @@ export default function ExitIntent (options = {}) {
       }
     }
   }
-  // MOUSEOUT event
+  // MOUSEOUT event (ONLY on DESKTOP)
   const onMouse = () => {
     display()
   }
-  const onMouseLeaveListener = target.addEventListener(
-    'mouseleave',
-    throttle(onMouse, config.eventThrottle),
-    false
-  )
+  const target = document.body
+  let onMouseLeaveListener
+  if (isDesktop) {
+    onMouseLeaveListener = target.addEventListener(
+      'mouseleave',
+      throttle(onMouse, config.eventThrottle),
+      false
+    )
+  }
   // TIMEOUT event
   let timer
   const restartTimer = () => {
@@ -57,7 +61,9 @@ export default function ExitIntent (options = {}) {
   timer = restartTimer() // start initial timer
   // CLEANUP
   const removeEvents = () => {
-    target.removeEventListener('mouseleave', onMouseLeaveListener)
+    if (onMouseLeaveListener) {
+      target.removeEventListener('mouseleave', onMouseLeaveListener)
+    }
     window.removeEventListener('scroll', onScrollListener)
     window.removeEventListener('mousemove', onMouseMoveListener)
   }

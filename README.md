@@ -7,7 +7,14 @@
 [![Size][Size]](https://unpkg.com/exit-intent)
 [![Size gzip][Size gzip]](https://unpkg.com/exit-intent)
 
-Exit intent detection library. Including support for mobile.
+Exit intent detection library. INCLUDING support for mobile and timeout.
+
+**DESKTOP-behaviour:**
+ => trigger intent if mouse leaves body ('mouseleave'-event)
+ => trigger after user has been inactive for `showAfterInactiveSeconds` seconds
+
+**MOBILE-behaviour:**
+=> trigger ONLY after user has been inactive for `showAfterInactiveSeconds` seconds
 
 ## Usage
 
@@ -16,9 +23,9 @@ import exitIntent from 'exit-intent-mobile'
 
 // Initialise
 const removeExitIntent = exitIntent({
-  maxDisplays: 2,
-  eventThrottle: 100,
-  showAfterInactiveSeconds: 60,
+  maxDisplays: 99999,             // default 99999
+  eventThrottle: 100,             // default 200
+  showAfterInactiveSeconds: 60,   // default 60
   onExitIntent: () => {
     console.log('exit-intent triggered')
   }    
