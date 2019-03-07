@@ -10,7 +10,8 @@ export default function ExitIntent (options = {}) {
   const defaultOptions = {
     maxDisplays: 99999,
     eventThrottle: 200,
-    showAfterInactiveSeconds: 60, // useful on mobile, where mouseleave does NOT exist
+    showAfterInactiveSecondsDesktop: 60,
+    showAfterInactiveSecondsMobile: 40,
     onExitIntent: () => {}
   }
   const config = {...defaultOptions, ...options}
@@ -40,14 +41,16 @@ export default function ExitIntent (options = {}) {
   }
   // TIMEOUT event
   let timer
+  const timeoutOnDevice = isDesktop
+    ? config.showAfterInactiveSecondsDesktop
+    : config.showAfterInactiveSecondsMobile
   const restartTimer = () => {
-    console.log('[restartTimer]')
     if (timer) {
       window.clearTimeout(timer)
     }
     timer = window.setTimeout(() => {
       display()
-    }, config.showAfterInactiveSeconds * 1000)
+    }, timeoutOnDevice * 1000)
   }
   // RESTART TIMER on 'scroll', 'mousemouse' and 'touch'-events (mobile)
   const onScrollListener = window.addEventListener(

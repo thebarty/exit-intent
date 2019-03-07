@@ -1,6 +1,6 @@
 {
   "name": "exit-intent-mobile",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Exit intent detection library. Including support for desktop and mobile.",
   "keywords": [
     "exit",

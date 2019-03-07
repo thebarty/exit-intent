@@ -11,10 +11,10 @@ Exit intent detection library. INCLUDING support for mobile and timeout.
 
 **DESKTOP-behaviour:**
  => trigger intent if mouse leaves body ('mouseleave'-event)
- => trigger after user has been inactive for `showAfterInactiveSeconds` seconds
+ => trigger after user has been inactive for `showAfterInactiveSecondsDesktop` seconds
 
 **MOBILE-behaviour:**
-=> trigger ONLY after user has been inactive for `showAfterInactiveSeconds` seconds
+=> trigger ONLY after user has been inactive for `showAfterInactiveSecondsMobile` seconds
 
 ## Usage
 
@@ -23,9 +23,10 @@ import exitIntent from 'exit-intent-mobile'
 
 // Initialise
 const removeExitIntent = exitIntent({
-  maxDisplays: 99999,             // default 99999
-  eventThrottle: 100,             // default 200
-  showAfterInactiveSeconds: 60,   // default 60
+  maxDisplays: 99999,                    // default 99999
+  eventThrottle: 100,                    // default 200
+  showAfterInactiveSecondsDesktop: 60,   // default 60
+  showAfterInactiveSecondsMobile: 40,    // default 40
   onExitIntent: () => {
     console.log('exit-intent triggered')
   }    
@@ -46,7 +47,7 @@ event throttle in milliseconds.
 `onExitIntent` (default no-op function)  
 function to call when an exit intent has been detected.
 
-`showAfterInactiveSeconds` (default 60 seconds)
+`showAfterInactiveSecondsDesktop` (default 60 seconds)
 If user does NOT move mouse or scroll for nr of seconds, `onExitIntent`-function will be called. Useful for mobile, where mouseleave does NOT exist.
 
 ### License
