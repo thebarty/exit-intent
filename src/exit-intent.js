@@ -41,6 +41,7 @@ export default function ExitIntent (options = {}) {
   // TIMEOUT event
   let timer
   const restartTimer = () => {
+    console.log('[restartTimer]')
     if (timer) {
       window.clearTimeout(timer)
     }
@@ -48,6 +49,7 @@ export default function ExitIntent (options = {}) {
       display()
     }, config.showAfterInactiveSeconds * 1000)
   }
+  // RESTART TIMER on 'scroll', 'mousemouse' and 'touch'-events (mobile)
   const onScrollListener = window.addEventListener(
     'scroll',
     throttle(restartTimer, config.eventThrottle * 2),
@@ -58,11 +60,19 @@ export default function ExitIntent (options = {}) {
     throttle(restartTimer, config.eventThrottle * 2),
     false
   )
+  const onTouchListener = window.addEventListener(
+    'touchstart',
+    throttle(restartTimer, config.eventThrottle * 2),
+    false
+  )
   timer = restartTimer() // start initial timer
   // CLEANUP
   const removeEvents = () => {
     if (onMouseLeaveListener) {
       target.removeEventListener('mouseleave', onMouseLeaveListener)
+    }
+    if (onTouchListener) {
+      target.removeEventListener('touchstart', onTouchListener)
     }
     window.removeEventListener('scroll', onScrollListener)
     window.removeEventListener('mousemove', onMouseMoveListener)

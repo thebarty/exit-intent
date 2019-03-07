@@ -1,7 +1,7 @@
 {
   "name": "exit-intent-mobile",
-  "version": "1.0.1",
-  "description": "Exit intent detection library. Including support for mobile.",
+  "version": "1.0.2",
+  "description": "Exit intent detection library. Including support for desktop and mobile.",
   "keywords": [
     "exit",
     "intent"
@@ -70,10 +70,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/danhayden/exit-intent.git"
+    "url": "git+https://github.com/thebarty/exit-intent.git"
   },
   "bugs": {
-    "url": "https://github.com/danhayden/exit-intent/issues"
+    "url": "https://github.com/thebarty/exit-intent/issues"
   },
-  "homepage": "https://github.com/danhayden/exit-intent#readme"
+  "homepage": "https://github.com/thebarty/exit-intent#readme"
 }

@@ -1,4 +1,4 @@
-# Exit Intent (Mobile)
+# Exit Intent (Desktop + Mobile)
 
 [![version][version]](http://npm.im/exit-intent)
 [![MIT License][MIT License]](http://opensource.org/licenses/MIT)
