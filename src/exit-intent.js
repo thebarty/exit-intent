@@ -12,12 +12,15 @@ export default function ExitIntent (options = {}) {
     eventThrottle: 200,
     showAfterInactiveSecondsDesktop: 60,
     showAfterInactiveSecondsMobile: 40,
+    showAgainAfterSeconds: 10,
     onExitIntent: () => {}
   }
   const config = {...defaultOptions, ...options}
+  // ===========================
+  // TRIGGER INTEND
+  // ... DISPLAY (only maxDisplays-times)
   let displays = 0
-  // DISPLAY (only maxDisplays-times)
-  const display = () => {
+  const doDisplay = () => {
     if (displays < config.maxDisplays) {
       displays++
       config.onExitIntent()
@@ -26,6 +29,12 @@ export default function ExitIntent (options = {}) {
       }
     }
   }
+  // ... LIMIT display to `config.showAgainAfterSeconds` to make sure that we do NOT bug the user too often
+  const display = throttle(doDisplay, config.showAgainAfterSeconds * 1000, {
+    trailing: false
+  })
+  // ===========================
+  // EVENT LISTENERS
   // MOUSEOUT event (ONLY on DESKTOP)
   const onMouse = () => {
     display()
@@ -55,20 +64,21 @@ export default function ExitIntent (options = {}) {
   // RESTART TIMER on 'scroll', 'mousemouse' and 'touch'-events (mobile)
   const onScrollListener = window.addEventListener(
     'scroll',
-    throttle(restartTimer, config.eventThrottle * 2),
+    throttle(restartTimer, config.eventThrottle),
     false
   )
   const onMouseMoveListener = window.addEventListener(
     'mousemove',
-    throttle(restartTimer, config.eventThrottle * 2),
+    throttle(restartTimer, config.eventThrottle),
     false
   )
   const onTouchListener = window.addEventListener(
     'touchstart',
-    throttle(restartTimer, config.eventThrottle * 2),
+    restartTimer, // NO throttle at this event
     false
   )
   timer = restartTimer() // start initial timer
+  // ===========================
   // CLEANUP
   const removeEvents = () => {
     if (onMouseLeaveListener) {
