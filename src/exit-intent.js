@@ -1,3 +1,4 @@
+import {log} from './tools.js'
 import throttle from 'lodash/throttle'
 import isTouchDevice from 'is-touch-device'
 const isDesktop = !isTouchDevice()
@@ -23,6 +24,7 @@ export default function ExitIntent (options = {}) {
   const doDisplay = () => {
     if (displays < config.maxDisplays) {
       displays++
+      log('display onExitIntent', displays)
       config.onExitIntent()
       if (displays >= config.maxDisplays) {
         removeEvents()
@@ -35,60 +37,73 @@ export default function ExitIntent (options = {}) {
   })
   // ===========================
   // EVENT LISTENERS
-  // MOUSEOUT event (ONLY on DESKTOP)
+  // DESKTOP: MOUSEOUT event
   const onMouse = () => {
+    log('mouseleave')
     display()
   }
-  const target = document.body
   let onMouseLeaveListener
   if (isDesktop) {
-    onMouseLeaveListener = target.addEventListener(
+    log('register mouseleave for desktop')
+    onMouseLeaveListener = document.body.addEventListener(
       'mouseleave',
       throttle(onMouse, config.eventThrottle),
       false
     )
   }
-  // TIMEOUT event
+  // ===========================
+  // TIMEOUT (show exit-intend AFTER timeout)
   let timer
   const timeoutOnDevice = isDesktop
     ? config.showAfterInactiveSecondsDesktop
     : config.showAfterInactiveSecondsMobile
+  log('timeoutOnDevice', timeoutOnDevice)
   const restartTimer = () => {
     if (timer) {
+      log('restartTimer clearTimeout')
       window.clearTimeout(timer)
     }
     timer = window.setTimeout(() => {
+      log('display after timeout')
       display()
     }, timeoutOnDevice * 1000)
   }
-  // RESTART TIMER on 'scroll', 'mousemouse' and 'touch'-events (mobile)
-  const onScrollListener = window.addEventListener(
-    'scroll',
-    throttle(restartTimer, config.eventThrottle),
-    false
-  )
-  const onMouseMoveListener = window.addEventListener(
-    'mousemove',
-    throttle(restartTimer, config.eventThrottle),
-    false
-  )
-  const onTouchListener = window.addEventListener(
-    'touchstart',
-    restartTimer, // NO throttle at this event
-    false
-  )
   timer = restartTimer() // start initial timer
+  // ===========================
+  // LISTENERS FOR `restartTimer()`
+  const listeners = [] // array to store listeners
+  const registerEvent = (event, target) => {
+    log('registering event for restartTimer', event, target)
+    const listener = window.addEventListener(
+      event,
+      throttle(event => {
+        log(event)
+        restartTimer()
+      }, config.eventThrottle),
+      false
+    )
+    listeners.push({event, listener, target})
+    return listener
+  }
+  if (isDesktop) {
+    registerEvent('scroll', window)
+    registerEvent('mousemove', window)
+  }
+  if (isTouchDevice) {
+    registerEvent('touchstart', document.body)
+    registerEvent('touchend', document.body)
+    registerEvent('touchmove', document.body)
+  }
   // ===========================
   // CLEANUP
   const removeEvents = () => {
     if (onMouseLeaveListener) {
-      target.removeEventListener('mouseleave', onMouseLeaveListener)
+      document.body.removeEventListener('mouseleave', onMouseLeaveListener)
     }
-    if (onTouchListener) {
-      target.removeEventListener('touchstart', onTouchListener)
-    }
-    window.removeEventListener('scroll', onScrollListener)
-    window.removeEventListener('mousemove', onMouseMoveListener)
+    listeners.forEach(theListener => {
+      const {event, listener, target} = theListener
+      target.removeEventListener(event, listener)
+    })
   }
   return removeEvents
 }
