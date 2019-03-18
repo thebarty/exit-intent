@@ -74,7 +74,7 @@ export default function ExitIntent (options = {}) {
   const listeners = [] // array to store listeners
   const registerEvent = (event, target) => {
     log('registering event for restartTimer', event, target)
-    const listener = window.addEventListener(
+    const listener = target.addEventListener(
       event,
       throttle(event => {
         log(event)
