@@ -59,6 +59,28 @@ If user does NOT move mouse or scroll for nr-of-seconds, `onExitIntent`-function
 `showAgainAfterSeconds` (default 10 seconds)
 If exit-intend was trigger, pause nr-of-seconds before showing it again. Good to NOT annoy the user.
 
+
+### Example: Use in React
+
+```
+class ExitIntendComponent extends React.Component {
+  componentDidMount() {
+    this.exitIntend = exitIntent({
+      maxDisplays: 99999,
+      eventThrottle: 100,
+      showAfterInactiveSecondsDesktop: 60,
+      showAfterInactiveSecondsMobile: 30,
+      onExitIntent: () => {
+        this.setState({ show: true })
+      },
+    })
+  }
+  componentWillUnmount() {
+    this.exitIntend()  // IMPORTANT: clear timeouts
+  }
+}
+```
+
 ### License
 
 MIT

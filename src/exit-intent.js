@@ -53,14 +53,14 @@ export default function ExitIntent (options = {}) {
   }
   // ===========================
   // TIMEOUT (show exit-intend AFTER timeout)
-  let timer
   const timeoutOnDevice = isDesktop
     ? config.showAfterInactiveSecondsDesktop
     : config.showAfterInactiveSecondsMobile
   log('timeoutOnDevice', timeoutOnDevice)
+  let timer
   const restartTimer = () => {
-    if (timer) {
-      log('restartTimer clearTimeout')
+    if (timer !== undefined) {
+      log('clearTimeout()')
       window.clearTimeout(timer)
     }
     timer = window.setTimeout(() => {
@@ -68,7 +68,7 @@ export default function ExitIntent (options = {}) {
       display()
     }, timeoutOnDevice * 1000)
   }
-  timer = restartTimer() // start initial timer
+  restartTimer() // start initial timer
   // ===========================
   // LISTENERS FOR `restartTimer()`
   const listeners = [] // array to store listeners
@@ -77,7 +77,7 @@ export default function ExitIntent (options = {}) {
     const listener = target.addEventListener(
       event,
       throttle(event => {
-        log(event)
+        log('throttled listener', event)
         restartTimer()
       }, config.eventThrottle),
       false
@@ -97,6 +97,7 @@ export default function ExitIntent (options = {}) {
   // ===========================
   // CLEANUP
   const removeEvents = () => {
+    log('removeEvents', displays)
     if (onMouseLeaveListener) {
       document.body.removeEventListener('mouseleave', onMouseLeaveListener)
     }
