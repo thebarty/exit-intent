@@ -44,12 +44,18 @@ export default function ExitIntent (options = {}) {
   }
   let onMouseLeaveListener
   if (isDesktop) {
-    log('register mouseleave for desktop')
-    onMouseLeaveListener = document.body.addEventListener(
-      'mouseleave',
-      throttle(onMouse, config.eventThrottle),
-      false
-    )
+    log('delaying mouseleave for desktop to prevent initial trigger')
+    // DELAY by 10 seconds to prevent mouseleave to be triggered BEFORE document is loaded.
+    //  in future we could use https://www.npmjs.com/package/dom-loaded
+    //  but this is our quick fix
+    window.setTimeout(() => {
+      log('register mouseleave for desktop')
+      onMouseLeaveListener = document.body.addEventListener(
+        'mouseleave',
+        throttle(onMouse, config.eventThrottle),
+        false
+      )
+    }, 10 * 1000)
   }
   // ===========================
   // TIMEOUT (show exit-intend AFTER timeout)
