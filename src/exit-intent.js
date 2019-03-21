@@ -1,4 +1,3 @@
-import {log} from './tools.js'
 import throttle from 'lodash/throttle'
 import isTouchDevice from 'is-touch-device'
 const isDesktop = !isTouchDevice()
@@ -9,6 +8,7 @@ const isDesktop = !isTouchDevice()
  */
 export default function ExitIntent (options = {}) {
   const defaultOptions = {
+    debug: false,
     maxDisplays: 99999,
     eventThrottle: 200,
     showAfterInactiveSecondsDesktop: 60,
@@ -17,6 +17,11 @@ export default function ExitIntent (options = {}) {
     onExitIntent: () => {}
   }
   const config = {...defaultOptions, ...options}
+  const log = (...args) => {
+    if (config.debug) {
+      console.log('[exit-intent-mobile]', ...args)
+    }
+  }
   // ===========================
   // TRIGGER INTEND
   // ... DISPLAY (only maxDisplays-times)
@@ -44,18 +49,12 @@ export default function ExitIntent (options = {}) {
   }
   let onMouseLeaveListener
   if (isDesktop) {
-    log('delaying mouseleave for desktop to prevent initial trigger')
-    // DELAY by 10 seconds to prevent mouseleave to be triggered BEFORE document is loaded.
-    //  in future we could use https://www.npmjs.com/package/dom-loaded
-    //  but this is our quick fix
-    window.setTimeout(() => {
-      log('register mouseleave for desktop')
-      onMouseLeaveListener = document.body.addEventListener(
-        'mouseleave',
-        throttle(onMouse, config.eventThrottle),
-        false
-      )
-    }, 10 * 1000)
+    log('register mouseleave for desktop')
+    onMouseLeaveListener = document.body.addEventListener(
+      'mouseleave',
+      throttle(onMouse, config.eventThrottle),
+      false
+    )
   }
   // ===========================
   // TIMEOUT (show exit-intend AFTER timeout)

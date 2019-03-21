@@ -32,7 +32,8 @@ const removeExitIntent = exitIntent({
   showAgainAfterSeconds: 10,             // default 10
   onExitIntent: () => {
     console.log('exit-intent triggered')
-  }    
+  },
+  debug: false,
 })
 
 // Destroy
@@ -73,6 +74,7 @@ class ExitIntendComponent extends React.Component {
       onExitIntent: () => {
         this.setState({ show: true })
       },
+      debug: false,
     })
   }
   componentWillUnmount() {
