@@ -1,10 +1,16 @@
 {
   "name": "exit-intent-mobile",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Exit intent detection library. Including support for desktop and mobile.",
   "keywords": [
     "exit",
-    "intent"
+    "intent",
+    "mouse",
+    "leave",
+    "events",
+    "dom",
+    "conversion",
+    "rates"
   ],
   "author": "thebarty",
   "license": "MIT",
@@ -66,7 +72,8 @@
   },
   "dependencies": {
     "is-touch-device": "^1.0.1",
-    "lodash": "4.17.4"
+    "lodash": "4.17.4",
+    "wheel": "0.0.5"
   },
   "repository": {
     "type": "git",

@@ -1,5 +1,6 @@
 import throttle from 'lodash/throttle'
 import isTouchDevice from 'is-touch-device'
+import {addWheelListener, removeWheelListener} from 'wheel'
 const isDesktop = !isTouchDevice()
 /**
  * References
@@ -93,6 +94,12 @@ export default function ExitIntent (options = {}) {
   if (isDesktop) {
     registerEvent('scroll', window)
     registerEvent('mousemove', window)
+    addWheelListener(window, event => {
+      throttle(event => {
+        log('throttled wheel listener', event)
+        restartTimer()
+      }, config.eventThrottle)
+    })
   }
   if (isTouchDevice) {
     registerEvent('touchstart', document.body)
@@ -105,6 +112,9 @@ export default function ExitIntent (options = {}) {
     log('removeEvents', displays)
     if (onMouseLeaveListener) {
       document.body.removeEventListener('mouseleave', onMouseLeaveListener)
+      removeWheelListener(window, () => {
+        log('removeWheelListener')
+      })
     }
     listeners.forEach(theListener => {
       const {event, listener, target} = theListener
