@@ -65,6 +65,10 @@ export default function ExitIntent (options = {}) {
   log('timeoutOnDevice', timeoutOnDevice)
   let timer
   const restartTimer = () => {
+    if (typeof timeoutOnDevice === 'undefined') {
+      log('display disabled')
+      return
+    }
     if (timer !== undefined) {
       log('clearTimeout()')
       window.clearTimeout(timer)
