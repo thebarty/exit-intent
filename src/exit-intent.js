@@ -45,6 +45,9 @@ export default function ExitIntent (options = {}) {
   // EVENT LISTENERS
   // DESKTOP: MOUSEOUT event
   const onMouse = () => {
+    if (!(e instanceof MouseEvent)) {
+      return;
+    }
     log('mouseleave')
     display()
   }
