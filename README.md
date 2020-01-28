@@ -42,20 +42,23 @@ removeExitIntent()
 
 ### Options
 
-`maxDisplays` (default 99999)  
+`maxDisplays` (default 99999)
 maximum number of times to trigger.
 
-`eventThrottle` (default 200)  
+`eventThrottle` (default 200)
 event throttle in milliseconds.
 
-`onExitIntent` (default no-op function)  
+`onExitIntent` (default no-op function)
 function to call when an exit intent has been detected.
 
 `showAfterInactiveSecondsDesktop` (default 60 seconds)
 If user does NOT move mouse or scroll for nr-of-seconds, `onExitIntent`-function will be called.
+To disable the timer, pass **undefined**.
 
 `showAfterInactiveSecondsMobile` (default 40 seconds)
 If user does NOT move mouse or scroll for nr-of-seconds, `onExitIntent`-function will be called.
+To disable the timer, pass **undefined**.
+
 
 `showAgainAfterSeconds` (default 10 seconds)
 If exit-intend was trigger, pause nr-of-seconds before showing it again. Good to NOT annoy the user.
