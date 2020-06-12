@@ -1,6 +1,6 @@
 {
-  "name": "exit-intent-mobile",
-  "version": "1.2.0",
+  "name": "exit-intent-mobile-bugfix",
+  "version": "1.2.7",
   "description": "Exit intent detection library. Including support for desktop and mobile.",
   "keywords": [
     "exit",
@@ -61,7 +61,7 @@
     "lint-staged": "4.2.1",
     "prettier": "1.7.0",
     "prettier-eslint-cli": "4.3.2",
-    "rollup": "0.50.0",
+    "rollup": "^0.50.0",
     "rollup-plugin-babel": "3.0.2",
     "rollup-plugin-commonjs": "8.2.1",
     "rollup-plugin-node-resolve": "3.0.0",
