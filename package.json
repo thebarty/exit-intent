@@ -1,6 +1,6 @@
 {
   "name": "exit-intent-mobile-bugfix",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "description": "Exit intent detection library. Including support for desktop and mobile.",
   "keywords": [
     "exit",
@@ -12,7 +12,7 @@
     "conversion",
     "rates"
   ],
-  "author": "thebarty",
+  "author": "liorchen",
   "license": "MIT",
   "main": "dist/exit-intent.js",
   "module": "dist/exit-intent.es.js",
@@ -77,10 +77,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thebarty/exit-intent.git"
+    "url": "git+https://github.com/liorchen/exit-intent"
   },
   "bugs": {
-    "url": "https://github.com/thebarty/exit-intent/issues"
+    "url": "https://github.com/liorchen/exit-intent/issues"
   },
-  "homepage": "https://github.com/thebarty/exit-intent#readme"
+  "homepage": "https://github.com/liorchen/exit-intent#readme"
 }
