@@ -2,6 +2,27 @@ import throttle from 'lodash/throttle'
 import isTouchDevice from 'is-touch-device'
 import {addWheelListener, removeWheelListener} from 'wheel'
 const isDesktop = !isTouchDevice()
+
+const myScroll = (function(){ //Function that checks the speed of scrolling
+  var last_position, new_position, timer, delta, delay = 50; 
+  function clear() {
+      last_position = null;
+      delta = 0;
+  }
+  
+  clear();
+  return function(){
+      new_position = window.scrollY;
+      if ( last_position != null ){
+          delta = new_position -  last_position;
+      }
+      last_position = new_position;
+      clearTimeout(timer);
+      timer = setTimeout(clear, delay);
+      return delta;
+  };
+})();
+
 /**
  * References
  *  => original https://www.npmjs.com/package/exit-intent
@@ -18,6 +39,7 @@ export default function ExitIntent (options = {}) {
     onExitIntent: () => {}
   }
   const config = {...defaultOptions, ...options}
+  let cleared = false;
   const log = (...args) => {
     if (config.debug) {
       console.log('[exit-intent-mobile]', ...args)
@@ -28,7 +50,7 @@ export default function ExitIntent (options = {}) {
   // ... DISPLAY (only maxDisplays-times)
   let displays = 0
   const doDisplay = () => {
-    if (displays < config.maxDisplays) {
+    if (!cleared && displays < config.maxDisplays) {
       displays++
       log('display onExitIntent', displays)
       config.onExitIntent()
@@ -44,18 +66,24 @@ export default function ExitIntent (options = {}) {
   // ===========================
   // EVENT LISTENERS
   // DESKTOP: MOUSEOUT event
-  const onMouse = () => {
+  const onMouse = (e) => {
     if (!(e instanceof MouseEvent)) {
       return;
     }
-    log('mouseleave')
-    display()
+    
+    if (
+      e.clientY < 50 &&
+      e.relatedTarget == null &&
+      e.target.nodeName.toLowerCase() !== 'select') {
+        log('mouseout')
+        display()
+    }
   }
   let onMouseLeaveListener
   if (isDesktop) {
     log('register mouseleave for desktop')
     onMouseLeaveListener = document.body.addEventListener(
-      'mouseleave',
+      'mouseout',
       throttle(onMouse, config.eventThrottle),
       false
     )
@@ -87,14 +115,37 @@ export default function ExitIntent (options = {}) {
   const listeners = [] // array to store listeners
   const registerEvent = (event, target) => {
     log('registering event for restartTimer', event, target)
+    
+    const defaultCB = throttle(event => {
+      log('throttled listener', event)
+      restartTimer()
+    }, config.eventThrottle);
+    let cb = null;
+    if(event === 'scroll') {
+      cb = function(e) {
+        if(myScroll() < -200) {
+          log('scroll')
+          display();    
+        }
+        defaultCB(e);
+      }
+    } else if(event === 'mousemove') {
+      cb = function(e) {
+        if(e.clientY < 50) {
+          log('intent-to-leave')
+          display();
+        } 
+        defaultCB(e);
+      } 
+    }
+    else {
+      cb = defaultCB;
+    }
     const listener = target.addEventListener(
       event,
-      throttle(event => {
-        log('throttled listener', event)
-        restartTimer()
-      }, config.eventThrottle),
+      cb,
       false
-    )
+    );
     listeners.push({event, listener, target})
     return listener
   }
@@ -109,14 +160,17 @@ export default function ExitIntent (options = {}) {
     })
   }
   if (isTouchDevice) {
-    registerEvent('touchstart', document.body)
-    registerEvent('touchend', document.body)
-    registerEvent('touchmove', document.body)
+    registerEvent('touchstart', document.body);
+    registerEvent('touchend', document.body);
+    registerEvent('touchmove', document.body);
+    registerEvent('scroll', window);
+
   }
   // ===========================
   // CLEANUP
   const removeEvents = () => {
     log('removeEvents', displays)
+    cleared = true;
     if (onMouseLeaveListener) {
       document.body.removeEventListener('mouseleave', onMouseLeaveListener)
       removeWheelListener(window, () => {
